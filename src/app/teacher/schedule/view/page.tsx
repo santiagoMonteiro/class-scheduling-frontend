@@ -45,7 +45,7 @@ export default function TeacherScheduleView() {
               locale: ptBR,
             })
             return (
-              <p key={i}>
+              <p key={Math.random()}>
                 <span className='font-bold'>{initialFormattedDate}h</span> até{' '}
                 <span className='font-bold'>{endFormattedDate}h</span>
               </p>

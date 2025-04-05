@@ -20,8 +20,11 @@ export default function StudentHome() {
         <h1 className='font-medium text-2xl mb-5 text-center'>
           Seja bem vindo aluno {userData?.name}
         </h1>
-        <Link className='block p-2 border-2 rounded-md text-center' href={''}>
-          Ver horários de aulas marcadas
+        <Link
+          className='block p-2 border-2 rounded-md text-center'
+          href={'schedule/view'}
+        >
+          Ver horários dos professores
         </Link>
         <Link
           className='block mt-4 p-2 border-2 rounded-md text-center'

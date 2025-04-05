@@ -40,6 +40,7 @@ type MainContextData = {
   register: (data: RegisterData) => Promise<void>
   registerTeacherSchedule: (schedules: Schedule[]) => Promise<void>
   fetchTeacherSchedule: () => Promise<void>
+  fetchTeachersWithSchedule: () => Promise<void>
 }
 
 type MainContextProviderProps = {
@@ -172,10 +173,16 @@ export function MainProvider({ children }: MainContextProviderProps) {
 
     const teacherToken = cookies['teacher.token']
 
+    const profileResponse = await api.get('/teacher/profile', {
+      headers: {
+        Authorization: `Bearer ${teacherToken}`,
+      },
+    })
+
     const response = await api.post(
       `/teacher/schedule`,
       {
-        teacherId: userData?.id,
+        teacherId: profileResponse.data.teacher.id,
         schedules,
       },
       {
@@ -225,6 +232,20 @@ export function MainProvider({ children }: MainContextProviderProps) {
     return response.data.schedules
   }
 
+  async function fetchTeachersWithSchedule() {
+    const cookies = parseCookies()
+    const studentToken = cookies['student.token']
+
+    const response = await api.get(`/student/fetch-teachers-with-schedule`, {
+      headers: {
+        Authorization: `Bearer ${studentToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    return response.data.teachers
+  }
+
   return (
     <MainContext.Provider
       value={{
@@ -235,6 +256,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
         logOut,
         registerTeacherSchedule,
         fetchTeacherSchedule,
+        fetchTeachersWithSchedule,
       }}
     >
       {children}
