@@ -3,25 +3,35 @@ import { MainContext } from '@/contexts/MainContext'
 import Link from 'next/link'
 import { FormEvent, useContext, useState } from 'react'
 
-export default function LoginStudent() {
-  const { signIn } = useContext(MainContext)
+export default function RegisterStudent() {
+  const { register } = useContext(MainContext)
 
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  async function handleSubmitLogin(e: FormEvent) {
+  async function handleSubmitRegister(e: FormEvent) {
     e.preventDefault()
-    await signIn({ email, password, role: 'student' })
+    await register({ name, email, password, role: 'student' })
   }
 
   return (
     <div className='min-h-screen flex items-center justify-center font-[family-name:var(--font-geist-sans)]'>
       <main className='h-full'>
         <div className='p-5 border-2 rounded-2xl'>
-          <form onSubmit={handleSubmitLogin}>
-            <h1 className='font-medium text-2xl mb-5'>Login aluno</h1>
+          <form onSubmit={handleSubmitRegister}>
+            <h1 className='font-medium text-2xl mb-5'>Registrar aluno</h1>
 
             <div className='space-y-2'>
+              <input
+                className='border-2 px-1 py-0.5 block rounded-md'
+                type='text'
+                placeholder='nome'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+
               <input
                 className='border-2 px-1 py-0.5 block rounded-md'
                 type='email'
@@ -45,18 +55,18 @@ export default function LoginStudent() {
                 type='submit'
                 className='bg-blue-500 px-4 text-white rounded-md py-1 cursor-pointer w-full'
               >
-                Login
+                Criar conta
               </button>
             </div>
             <Link
               className='mt-4 block opacity-65 hover:underline'
-              href={'/register/student'}
+              href={'/student/login'}
             >
-              Criar conta
+              Fazer login
             </Link>
             <Link
               className='block opacity-65 hover:underline'
-              href={'/login/teacher'}
+              href={'/teacher/register'}
             >
               Acessar como professor
             </Link>

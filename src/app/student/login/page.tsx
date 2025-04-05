@@ -3,7 +3,7 @@ import { MainContext } from '@/contexts/MainContext'
 import Link from 'next/link'
 import { FormEvent, useContext, useState } from 'react'
 
-export default function LoginTeacher() {
+export default function LoginStudent() {
   const { signIn } = useContext(MainContext)
 
   const [email, setEmail] = useState('')
@@ -11,7 +11,7 @@ export default function LoginTeacher() {
 
   async function handleSubmitLogin(e: FormEvent) {
     e.preventDefault()
-    signIn({ email, password, role: 'teacher' })
+    await signIn({ email, password, role: 'student' })
   }
 
   return (
@@ -19,7 +19,7 @@ export default function LoginTeacher() {
       <main className='h-full'>
         <div className='p-5 border-2 rounded-2xl'>
           <form onSubmit={handleSubmitLogin}>
-            <h1 className='font-medium text-2xl mb-5'>Login professor</h1>
+            <h1 className='font-medium text-2xl mb-5'>Login aluno</h1>
 
             <div className='space-y-2'>
               <input
@@ -42,17 +42,23 @@ export default function LoginTeacher() {
 
             <div className='mt-2 space-x-5 text-base'>
               <button
-                onClick={() => signIn({ email, password, role: 'teacher' })}
+                type='submit'
                 className='bg-blue-500 px-4 text-white rounded-md py-1 cursor-pointer w-full'
               >
                 Login
               </button>
             </div>
-            <Link className='mt-4 block opacity-65 hover:underline' href={'/register/teacher'}>
+            <Link
+              className='mt-4 block opacity-65 hover:underline'
+              href={'/student/register'}
+            >
               Criar conta
             </Link>
-            <Link className='block opacity-65 hover:underline' href={'/login/student'}>
-              Acessar como aluno
+            <Link
+              className='block opacity-65 hover:underline'
+              href={'/teacher/login'}
+            >
+              Acessar como professor
             </Link>
           </form>
         </div>

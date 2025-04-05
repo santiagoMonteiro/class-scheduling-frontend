@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { FormEvent, useContext, useState } from 'react'
 
 export default function RegisterStudent() {
-  const { register } = useContext(MainContext)
+  const { signIn, register } = useContext(MainContext)
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -12,7 +12,7 @@ export default function RegisterStudent() {
 
   async function handleSubmitRegister(e: FormEvent) {
     e.preventDefault()
-    await register({ name, email, password, role: 'student' })
+    await register({ name, email, password, role: 'teacher' })
   }
 
   return (
@@ -20,7 +20,7 @@ export default function RegisterStudent() {
       <main className='h-full'>
         <div className='p-5 border-2 rounded-2xl'>
           <form onSubmit={handleSubmitRegister}>
-            <h1 className='font-medium text-2xl mb-5'>Registrar aluno</h1>
+            <h1 className='font-medium text-2xl mb-5'>Registrar professor</h1>
 
             <div className='space-y-2'>
               <input
@@ -29,7 +29,6 @@ export default function RegisterStudent() {
                 placeholder='nome'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
               />
 
               <input
@@ -38,7 +37,6 @@ export default function RegisterStudent() {
                 placeholder='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
               <input
                 className='border-2 px-1 py-0.5 block rounded-md'
@@ -46,7 +44,6 @@ export default function RegisterStudent() {
                 placeholder='senha'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
               />
             </div>
 
@@ -60,15 +57,15 @@ export default function RegisterStudent() {
             </div>
             <Link
               className='mt-4 block opacity-65 hover:underline'
-              href={'/login/student'}
+              href={'/student/login'}
             >
               Fazer login
             </Link>
             <Link
               className='block opacity-65 hover:underline'
-              href={'/register/teacher'}
+              href={'/student/register'}
             >
-              Acessar como professor
+              Acessar como aluno
             </Link>
           </form>
         </div>
