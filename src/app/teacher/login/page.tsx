@@ -41,17 +41,20 @@ export default function LoginTeacher() {
             </div>
 
             <div className='mt-2 space-x-5 text-base'>
-              <button
-                onClick={() => signIn({ email, password, role: 'teacher' })}
-                className='bg-blue-500 px-4 text-white rounded-md py-1 cursor-pointer w-full'
-              >
+              <button className='bg-blue-500 px-4 text-white rounded-md py-1 cursor-pointer w-full'>
                 Login
               </button>
             </div>
-            <Link className='mt-4 block opacity-65 hover:underline' href={'/teacher/register'}>
+            <Link
+              className='mt-4 block opacity-65 hover:underline'
+              href={'/teacher/register'}
+            >
               Criar conta
             </Link>
-            <Link className='block opacity-65 hover:underline' href={'/student/login'}>
+            <Link
+              className='block opacity-65 hover:underline'
+              href={'/student/login'}
+            >
               Acessar como aluno
             </Link>
           </form>

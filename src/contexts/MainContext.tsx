@@ -8,6 +8,11 @@ import { useRouter } from 'next/navigation'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 
+type Schedule = {
+  initialTime: Date
+  endTime: Date
+}
+
 type User = {
   id: string
   name: string
@@ -33,6 +38,8 @@ type MainContextData = {
   userData: User | null
   logOut: () => Promise<void>
   register: (data: RegisterData) => Promise<void>
+  registerTeacherSchedule: (schedules: Schedule[]) => Promise<void>
+  fetchTeacherSchedule: (teacherId: string) => Promise<void>
 }
 
 type MainContextProviderProps = {
@@ -48,6 +55,10 @@ export function MainProvider({ children }: MainContextProviderProps) {
   const router = useRouter()
 
   useEffect(() => {
+    if (userData) {
+      return
+    }
+
     const cookies = parseCookies()
 
     const studentToken = cookies['student.token']
@@ -65,7 +76,6 @@ export function MainProvider({ children }: MainContextProviderProps) {
             setIsAuthenticated(true)
             setUserData(response.data.student)
             if (path === '/student/login') {
-              console.log('redirect')
               router.push('/student/home')
             }
           }
@@ -87,10 +97,6 @@ export function MainProvider({ children }: MainContextProviderProps) {
             }
           }
         })
-    } else {
-      if (path.includes('home')) {
-        router.push('/student/login')
-      }
     }
   }, [])
 
@@ -119,9 +125,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
           maxAge: 60 * 60 * 24 * 7, // 7 days
         })
 
-        console.log(role)
-
-        // setIsAuthenticated(true)
+        setIsAuthenticated(true)
         router.push(`/${role}/home`)
       }
     } catch (e) {
@@ -167,9 +171,70 @@ export function MainProvider({ children }: MainContextProviderProps) {
     router.push('/student/login')
   }
 
+  async function registerTeacherSchedule(schedules: Schedule[]) {
+    const cookies = parseCookies()
+
+    const teacherToken = cookies['teacher.token']
+
+    const response = await api.post(
+      `/teacher/schedule`,
+      {
+        teacherId: userData?.id,
+        schedules,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${teacherToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (response.status === 201) {
+      notification({
+        type: 'SUCCESS',
+        message: 'Horários criados com sucesso!',
+      })
+    } else {
+      notification({
+        type: 'ERROR',
+        message: 'Houve um erro na criação de seus horários',
+      })
+    }
+  }
+
+  async function fetchTeacherSchedule(teacherId: string) {
+    const cookies = parseCookies()
+
+    const teacherToken = cookies['teacher.token']
+
+    const response = await api.patch(
+      `/teacher/schedule`,
+      {
+        teacherId: userData?.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${teacherToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    return response.data
+  }
+
   return (
     <MainContext.Provider
-      value={{ isAuthenticated, signIn, register, userData, logOut }}
+      value={{
+        isAuthenticated,
+        signIn,
+        register,
+        userData,
+        logOut,
+        registerTeacherSchedule,
+        fetchTeacherSchedule,
+      }}
     >
       {children}
     </MainContext.Provider>
