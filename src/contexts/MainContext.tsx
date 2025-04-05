@@ -3,7 +3,7 @@
 import { api } from '@/lib/api'
 import { notification } from '@/utils/notification'
 import { AxiosError } from 'axios'
-import { redirect, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { createContext, ReactNode, useEffect, useState } from 'react'
@@ -39,7 +39,7 @@ type MainContextData = {
   logOut: () => Promise<void>
   register: (data: RegisterData) => Promise<void>
   registerTeacherSchedule: (schedules: Schedule[]) => Promise<void>
-  fetchTeacherSchedule: (teacherId: string) => Promise<void>
+  fetchTeacherSchedule: () => Promise<void>
 }
 
 type MainContextProviderProps = {
@@ -75,7 +75,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
           if (response.data.student) {
             setIsAuthenticated(true)
             setUserData(response.data.student)
-            if (path === '/student/login') {
+            if (path.includes('login')) {
               router.push('/student/home')
             }
           }
@@ -92,7 +92,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
             setIsAuthenticated(true)
             setUserData(response.data.teacher)
 
-            if (path === '/teacher/login') {
+            if (path.includes('login')) {
               router.push('/teacher/home')
             }
           }
@@ -155,7 +155,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
             type: 'SUCCESS',
             message: 'Conta criada com sucesso!',
           })
-          redirect(`/${role}/login`)
+          router.push(`/${role}/login`)
         } else {
           notification({
             type: 'ERROR',
@@ -203,12 +203,12 @@ export function MainProvider({ children }: MainContextProviderProps) {
     }
   }
 
-  async function fetchTeacherSchedule(teacherId: string) {
+  async function fetchTeacherSchedule() {
     const cookies = parseCookies()
 
     const teacherToken = cookies['teacher.token']
 
-    const response = await api.patch(
+    const response = await api.post(
       `/teacher/schedule`,
       {
         teacherId: userData?.id,

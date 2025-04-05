@@ -15,11 +15,9 @@ export default function TeacherScheduleView() {
   const [schedules, setSchedules] = useState<Schedule[]>([])
 
   useEffect(() => {
-    if (userData) {
-      fetchTeacherSchedule(userData.id).then((data) => {
-        console.log
-      })
-    }
+    fetchTeacherSchedule().then((data) => {
+      console.log(data)
+    })
   }, [])
 
   return (
