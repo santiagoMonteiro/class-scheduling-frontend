@@ -25,10 +25,14 @@ export default function TeacherScheduleDefine() {
           endTime: new Date(`${date}T${endTime}`),
         },
       ])
-      setDate('')
-      setInitialTime('')
-      setEndTime('')
     }
+    resetInputs()
+  }
+
+  function resetInputs() {
+    setDate('')
+    setInitialTime('')
+    setEndTime('')
   }
 
   function handleChangeDate(e: ChangeEvent<HTMLInputElement>) {
@@ -89,7 +93,10 @@ export default function TeacherScheduleDefine() {
             Adicionar
           </button>
           <button
-            onClick={() => registerTeacherSchedule(schedules)}
+            onClick={() => {
+              setSchedules([])
+              registerTeacherSchedule(schedules)
+            }}
             className='cursor-pointer p-2 bg-gray-500 text-white rounded-md w-62'
           >
             Salvar
@@ -111,12 +118,10 @@ export default function TeacherScheduleDefine() {
             })
 
             return (
-              <>
-                <p key={i}>
-                  <span className='font-bold'>{initialFormattedDate}h</span> até{' '}
-                  <span className='font-bold'>{endFormattedDate}h</span>
-                </p>
-              </>
+              <p key={i}>
+                <span className='font-bold'>{initialFormattedDate}h</span> até{' '}
+                <span className='font-bold'>{endFormattedDate}h</span>
+              </p>
             )
           })}
         </div>

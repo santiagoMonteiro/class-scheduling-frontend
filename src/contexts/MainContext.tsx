@@ -55,10 +55,6 @@ export function MainProvider({ children }: MainContextProviderProps) {
   const router = useRouter()
 
   useEffect(() => {
-    if (userData) {
-      return
-    }
-
     const cookies = parseCookies()
 
     const studentToken = cookies['student.token']
@@ -205,13 +201,18 @@ export function MainProvider({ children }: MainContextProviderProps) {
 
   async function fetchTeacherSchedule() {
     const cookies = parseCookies()
-
     const teacherToken = cookies['teacher.token']
 
+    const profileResponse = await api.get('/teacher/profile', {
+      headers: {
+        Authorization: `Bearer ${teacherToken}`,
+      },
+    })
+
     const response = await api.post(
-      `/teacher/schedule`,
+      `/teacher/fetch-schedules`,
       {
-        teacherId: userData?.id,
+        teacherId: profileResponse.data.teacher.id,
       },
       {
         headers: {
@@ -221,7 +222,7 @@ export function MainProvider({ children }: MainContextProviderProps) {
       }
     )
 
-    return response.data
+    return response.data.schedules
   }
 
   return (

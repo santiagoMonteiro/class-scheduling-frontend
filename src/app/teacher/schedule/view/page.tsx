@@ -4,21 +4,18 @@ import { MainContext } from '@/contexts/MainContext'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { ptBR } from 'date-fns/locale'
 
-type Schedule = {
-  initialTime: Date
-  endTime: Date
-}
-
 export default function TeacherScheduleView() {
-  const { logOut, fetchTeacherSchedule, userData } = useContext(MainContext)
+  const { logOut, fetchTeacherSchedule } = useContext(MainContext)
 
-  const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [schedules, setSchedules] = useState<[]>([])
 
   useEffect(() => {
     fetchTeacherSchedule().then((data) => {
-      console.log(data)
+      setSchedules(data)
     })
   }, [])
+
+  console.log(schedules)
 
   return (
     <main>
@@ -30,11 +27,9 @@ export default function TeacherScheduleView() {
       </button>
       <div className='space-y-2 flex flex-col justify-center items-center'>
         <h1 className='font-medium text-2xl mb-5 text-center'>
-          Definir horários disponíveis para aula
+          Lista de horários definidos para aula
         </h1>
-        <p className='mb-6'>
-          Defina a data, o horário de início e o horário de término
-        </p>
+        <p className='mb-6'>Horários</p>
 
         <div>
           {schedules.map((e, i) => {
@@ -49,14 +44,11 @@ export default function TeacherScheduleView() {
             const endFormattedDate = format(e.endTime, 'HH:mm', {
               locale: ptBR,
             })
-
             return (
-              <>
-                <p key={i}>
-                  <span className='font-bold'>{initialFormattedDate}h</span> até{' '}
-                  <span className='font-bold'>{endFormattedDate}h</span>
-                </p>
-              </>
+              <p key={i}>
+                <span className='font-bold'>{initialFormattedDate}h</span> até{' '}
+                <span className='font-bold'>{endFormattedDate}h</span>
+              </p>
             )
           })}
         </div>
